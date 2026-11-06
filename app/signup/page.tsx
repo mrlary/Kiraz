@@ -63,7 +63,6 @@ export default function SignUpPage() {
             >
               <option value="USER">Standart Kullanıcı</option>
               <option value="PROVIDER">Hizmet Veren</option>
-              <option value="ADMIN">Web Admin</option>
             </select>
           </div>
 
