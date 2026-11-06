@@ -4,12 +4,12 @@ import { prisma } from '@/lib/prisma'
 import bcrypt from 'bcryptjs'
 
 export async function signUp(prevState: any, formData: FormData) {
-  const name = formData.get('name') as string
+  const username = formData.get('username') as string
   const email = formData.get('email') as string
   const password = formData.get('password') as string
+  const role = formData.get('role') as string || 'USER' // Seçilmezse varsayılan USER
 
-  // Basit doğrulamalar
-  if (!name || !email || !password) {
+  if (!username || !email || !password) {
     return { error: 'Lütfen tüm alanları doldurun.' }
   }
 
@@ -18,7 +18,6 @@ export async function signUp(prevState: any, formData: FormData) {
   }
 
   try {
-    // 1. Bu e-posta ile daha önce kayıt olunmuş mu?
     const existingUser = await prisma.user.findUnique({
       where: { email },
     })
@@ -27,20 +26,21 @@ export async function signUp(prevState: any, formData: FormData) {
       return { error: 'Bu e-posta adresi zaten kullanımda.' }
     }
 
-    // 2. Şifreyi şifrele (hash'le)
     const hashedPassword = await bcrypt.hash(password, 10)
 
-    // 3. Veritabanına kaydet
+    // Veritabanına rolü de ekliyoruz
     await prisma.user.create({
       data: {
-        name,
+        name: username,
         email,
         password: hashedPassword,
+        role,
       },
     })
 
-    return { success: 'Kayıt başarıyla tamamlandı! Giriş yapabilirsiniz.' }
-  } catch (error) {
-    return { error: 'Bir hata oluştu. Lütfen tekrar deneyin.' }
+    return { success: 'Kayıt başarıyla tamamlandı! Artık giriş yapabilirsiniz.' }
+  } catch (error: any) {
+    console.error("Kayıt Hatası:", error)
+    return { error: 'Bir veritabanı hatası oluştu.' }
   }
 }

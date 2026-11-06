@@ -4,7 +4,7 @@ import { useActionState } from 'react'
 import { signUp } from '@/app/actions/signup'
 
 export default function SignUpPage() {
-  const [state, formAction, isPending] = useActionState(signUp, null)
+  const [state, formAction, isPending] = useActionState<any, any>(signUp, null)
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-50 p-4">
@@ -14,21 +14,19 @@ export default function SignUpPage() {
         </h2>
 
         <form action={formAction} className="space-y-4">
-          {/* Ad Soyad */}
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-1">
               Ad Soyad
             </label>
             <input
               type="text"
-              name="name"
+              name="username"
               required
               placeholder="Ahmet Yılmaz"
               className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none text-gray-800"
             />
           </div>
 
-          {/* E-posta */}
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-1">
               E-posta Adresi
@@ -42,7 +40,6 @@ export default function SignUpPage() {
             />
           </div>
 
-          {/* Şifre */}
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-1">
               Şifre
@@ -56,21 +53,32 @@ export default function SignUpPage() {
             />
           </div>
 
-          {/* Hata Mesajı */}
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1">
+              Hesap Türü (Rol)
+            </label>
+            <select
+              name="role"
+              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none text-gray-800 bg-white"
+            >
+              <option value="USER">Standart Kullanıcı</option>
+              <option value="PROVIDER">Hizmet Veren</option>
+              <option value="ADMIN">Web Admin</option>
+            </select>
+          </div>
+
           {state?.error && (
             <div className="p-3 bg-red-100 border border-red-300 text-red-700 text-sm rounded-lg">
               {state.error}
             </div>
           )}
 
-          {/* Başarı Mesajı */}
           {state?.success && (
             <div className="p-3 bg-green-100 border border-green-300 text-green-700 text-sm rounded-lg">
               {state.success}
             </div>
           )}
 
-          {/* Gönder Butonu */}
           <button
             type="submit"
             disabled={isPending}
